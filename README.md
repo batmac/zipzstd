@@ -1,0 +1,3 @@
+# zipstd
+
+use zstd zip
