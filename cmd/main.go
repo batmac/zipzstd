@@ -4,12 +4,33 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"log"
+	"os"
 
-	"github.com/klauspost/compress/zip"
+	"archive/zip"
+
 	"github.com/klauspost/compress/zstd"
+	flag "github.com/spf13/pflag"
+)
+
+var (
+	argDecompress  = flag.BoolP("decompress", "x", false, "decompress files")
+	argArchiveFile = flag.StringP("file", "f", "-", "file")
 )
 
 func main() {
+	flag.Parse()
+
+	if *argDecompress {
+		log.Println("decompress")
+	}
+
+	archiveFile := *argArchiveFile
+	files := flag.Args()[1:]
+
+	if len(files) == 0 {
+		panic("no files")
+	}
 
 	compr := zstd.ZipCompressor(zstd.WithEncoderCRC(true))
 	decomp := zstd.ZipDecompressor()
@@ -20,30 +41,37 @@ func main() {
 	zw.RegisterCompressor(zstd.ZipMethodWinZip, compr)
 	zw.RegisterCompressor(zstd.ZipMethodPKWare, compr)
 
-	// Create 1MB data
-	tmp := make([]byte, 1<<20)
-	for i := range tmp {
-		tmp[i] = byte(i)
+	for _, path := range files {
+		// Create 1MB data
+		tmp := make([]byte, 1<<20)
+		for i := range tmp {
+			tmp[i] = byte(i)
+		}
+		w, err := zw.CreateHeader(&zip.FileHeader{
+			Name:   path,
+			Method: zstd.ZipMethodWinZip,
+		})
+		if err != nil {
+			panic(err)
+		}
+		w.Write(tmp)
 	}
-	w, err := zw.CreateHeader(&zip.FileHeader{
-		Name:   "file1.txt",
-		Method: zstd.ZipMethodWinZip,
-	})
-	if err != nil {
-		panic(err)
-	}
-	w.Write(tmp)
 
-	// Another...
-	w, err = zw.CreateHeader(&zip.FileHeader{
-		Name:   "file2.txt",
-		Method: zstd.ZipMethodPKWare,
-	})
+	zw.Close()
+
+	f, err := os.Create(archiveFile)
 	if err != nil {
 		panic(err)
 	}
-	w.Write(tmp)
-	zw.Close()
+
+	n, err := io.Copy(f, &buf)
+	if err != nil {
+		panic(err)
+	}
+	log.Printf("wrote %v bytes.", n)
+	if f.Close(); err != nil {
+		panic(err)
+	}
 
 	zr, err := zip.NewReader(bytes.NewReader(buf.Bytes()), int64(buf.Len()))
 	if err != nil {
