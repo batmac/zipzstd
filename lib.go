@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	// re-export
+	// re-export, prefer the first one
 	ZipMethodWinZip = zstd.ZipMethodWinZip
 	ZipMethodPKWare = zstd.ZipMethodPKWare
 )
