@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"sync"
 	"testing"
 
@@ -38,9 +39,17 @@ func testExample(t *testing.T) {
 	zipstd.Register(zw)
 	// Create 1MB data
 	tmp := make([]byte, 1<<20)
-	for i := range tmp {
+	/* 	for i := range tmp {
 		tmp[i] = byte(i)
+	} */
+	nr, err := rand.Read(tmp)
+	if err != nil {
+		t.Fatal(err)
 	}
+	if nr != len(tmp) {
+		t.Fatal("tmp not fully written")
+	}
+
 	w, err := zw.CreateHeader(&zip.FileHeader{
 		Name:   "file1.txt",
 		Method: zipstd.ZipMethodWinZip,
