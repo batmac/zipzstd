@@ -28,6 +28,7 @@ func RegisterDecompressor(z checkDecompressor) {
 	z.RegisterDecompressor(zstd.ZipMethodWinZip, Decomp)
 	z.RegisterDecompressor(zstd.ZipMethodPKWare, Decomp)
 }
+
 func RegisterCompressor(z checkCompressor) {
 	z.RegisterCompressor(zstd.ZipMethodWinZip, Compr)
 	z.RegisterCompressor(zstd.ZipMethodPKWare, Compr)
