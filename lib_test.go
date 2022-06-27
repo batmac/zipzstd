@@ -8,11 +8,13 @@ import (
 	"math/rand"
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/batmac/zipstd"
 )
 
 func TestZipstd(t *testing.T) {
+	rand.Seed(time.Now().UnixNano())
 	testExamples(t)
 }
 
