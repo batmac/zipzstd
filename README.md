@@ -1,3 +1,3 @@
 # zipstd
 ## use zstd in zip
-use github.com/klauspost/compress
+uses github.com/klauspost/compress
