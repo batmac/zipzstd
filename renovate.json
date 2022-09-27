@@ -22,11 +22,11 @@
       "matchUpdateTypes": [
         "major"
       ]
-    },
+    }
   ],
   "postUpdateOptions": [
     "gomodUpdateImportPaths",
     "gomodTidy"
   ],
-  "prHourlyLimit": 0,
+  "prHourlyLimit": 0
 }
