@@ -1,5 +1,7 @@
 module github.com/batmac/zipstd
 
-go 1.19
+go 1.22
 
-require github.com/klauspost/compress v1.16.7
+toolchain go1.24.6
+
+require github.com/klauspost/compress v1.18.0
