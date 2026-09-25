@@ -4,4 +4,4 @@ go 1.25
 
 toolchain go1.27.1
 
-require github.com/klauspost/compress v1.20.0
+require github.com/klauspost/compress v1.20.1
